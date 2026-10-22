@@ -24,7 +24,7 @@ function StockBadge({ stock }) {
 
 export default function ProductCard({ product, quantityInCart, onAdd }) {
   // Si la imagen falla al cargar, se muestra el placeholder "Sin Imagen"
-  const primarySrc = "../../assets/" + product.imagen_url || PLACEHOLDER
+  const primarySrc = "/assets/" + product.imagen_url || PLACEHOLDER
   const [failedSrc, setFailedSrc] = useState(null)
   const src = failedSrc === primarySrc ? PLACEHOLDER_ERROR : primarySrc
 
