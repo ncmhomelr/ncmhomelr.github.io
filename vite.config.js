@@ -6,5 +6,5 @@ import react from '@vitejs/plugin-react'
 // el nombre del repositorio. La app no usa router, así que no hay deep-links.
 export default defineConfig({
   plugins: [react()],
-  base: '/ncmhomelr/', // Nombre exacto del repositorio en GitHub entre barras
+  base: '/', // Nombre exacto del repositorio en GitHub entre barras
 })
