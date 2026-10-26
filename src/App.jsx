@@ -30,6 +30,8 @@ export default function App() {
 
   // Formulario de checkout
   const [customer, setCustomer] = useState(EMPTY_CUSTOMER)
+  const [location, setLocation] = useState(null) // { lat, lng } | null
+  const [receipt, setReceipt] = useState(null) // File (imagen ya validada) | null
 
   const filteredProducts = useMemo(() => {
     const query = searchQuery.toLowerCase()
@@ -56,7 +58,8 @@ export default function App() {
     const ok = await catalog.processOrder({
       cart: cart.cart,
       customer,
-      total: cart.cartSubtotal,
+      location,
+      receipt,
     })
 
     if (ok) {
@@ -112,6 +115,10 @@ export default function App() {
         onClose={() => setShowCheckoutModal(false)}
         customer={customer}
         onCustomerChange={setCustomer}
+        location={location}
+        onLocationChange={setLocation}
+        receipt={receipt}
+        onReceiptChange={setReceipt}
         totalCartItems={cart.totalCartItems}
         cartSubtotal={cart.cartSubtotal}
         isSubmitting={catalog.isSubmitting}

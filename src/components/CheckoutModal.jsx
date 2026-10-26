@@ -1,4 +1,9 @@
+import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { formatCurrency } from '../lib/format'
+import ReceiptUploader from './ReceiptUploader'
+
+// El mapa (Leaflet) se descarga solo cuando se abre el checkout
+const LocationPicker = lazy(() => import('./LocationPicker'))
 
 const INPUT_CLASSES =
   'w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none'
@@ -9,24 +14,61 @@ export default function CheckoutModal({
   onClose,
   customer,
   onCustomerChange,
+  location,
+  onLocationChange,
+  receipt,
+  onReceiptChange,
   totalCartItems,
   cartSubtotal,
   isSubmitting,
   onSubmit,
 }) {
+  const [receiptError, setReceiptError] = useState('')
+  const [locationError, setLocationError] = useState('')
+  const [receiptBusy, setReceiptBusy] = useState(false)
+  const receiptRef = useRef(null)
+  const locationRef = useRef(null)
+
+  // El modal sigue montado al cerrarse: se limpian los errores para la próxima vez
+  useEffect(() => {
+    if (!isOpen) {
+      setReceiptError('')
+      setLocationError('')
+    }
+  }, [isOpen])
+
   if (!isOpen) return null
+
+  // Mientras se envía el pedido no se puede cerrar (evita pedidos duplicados)
+  const safeClose = () => {
+    if (!isSubmitting) onClose()
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (isSubmitting || receiptBusy) return
+
+    setReceiptError('')
+    setLocationError('')
     onSubmit()
   }
 
   const handleChange = (field) => (e) => onCustomerChange({ ...customer, [field]: e.target.value })
 
+  const handleReceiptChange = (file) => {
+    if (file) setReceiptError('')
+    onReceiptChange(file)
+  }
+
+  const handleLocationChange = (loc) => {
+    if (loc) setLocationError('')
+    onLocationChange(loc)
+  }
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-3 sm:px-4 py-6">
-        <div className="fixed inset-0 bg-black/50 dark:bg-black/75 transition-opacity" onClick={onClose}></div>
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/75 transition-opacity" onClick={safeClose}></div>
 
         <div className="relative bg-white dark:bg-gray-800 rounded-xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-gray-200 dark:border-gray-700 my-auto">
           <div className="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700 mb-4">
@@ -35,8 +77,9 @@ export default function CheckoutModal({
               <span>Finalizar Pedido</span>
             </h3>
             <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
+              onClick={safeClose}
+              disabled={isSubmitting}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 disabled:opacity-40"
             >
               <i className="fa-solid fa-xmark text-xl"></i>
             </button>
@@ -52,6 +95,7 @@ export default function CheckoutModal({
                 value={customer.nombre}
                 onChange={handleChange('nombre')}
                 required
+                maxLength={120}
                 placeholder="Ej: Juan Pérez"
                 className={INPUT_CLASSES}
               />
@@ -66,6 +110,7 @@ export default function CheckoutModal({
                 value={customer.telefono}
                 onChange={handleChange('telefono')}
                 required
+                maxLength={40}
                 placeholder="Ej: +54 9 11 1234-5678"
                 className={INPUT_CLASSES}
               />
@@ -80,9 +125,33 @@ export default function CheckoutModal({
                 onChange={handleChange('direccion')}
                 required
                 rows={2}
+                maxLength={300}
                 placeholder="Calle, número, piso/depto, ciudad..."
                 className={INPUT_CLASSES}
               ></textarea>
+            </div>
+
+            {/* Mapa interactivo (Leaflet + OpenStreetMap) */}
+            <div ref={locationRef}>
+              <Suspense
+                fallback={
+                  <div className="h-56 sm:h-64 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-sm text-gray-500 dark:text-gray-400">
+                    <i className="fa-solid fa-spinner animate-spin mr-2"></i>
+                    Cargando mapa...
+                  </div>
+                }
+              >
+                <LocationPicker
+                  value={location}
+                  onChange={handleLocationChange}
+                  addressQuery={customer.direccion}
+                />
+              </Suspense>
+              {locationError && (
+                <p className="mt-1.5 text-xs text-red-600 dark:text-red-400" role="alert">
+                  {locationError}
+                </p>
+              )}
             </div>
 
             {/* Resumen rápido de compra */}
@@ -99,18 +168,30 @@ export default function CheckoutModal({
               </div>
             </div>
 
+            {/* Comprobante de la transferencia */}
+            <div ref={receiptRef}>
+              <ReceiptUploader
+                file={receipt}
+                onChange={handleReceiptChange}
+                onBusyChange={setReceiptBusy}
+                error={receiptError}
+                disabled={isSubmitting}
+              />
+            </div>
+
             <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2">
               <button
                 type="button"
-                onClick={onClose}
-                className="w-full sm:w-auto px-4 py-2.5 text-gray-600 dark:text-gray-300 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition text-center"
+                onClick={safeClose}
+                disabled={isSubmitting}
+                className="w-full sm:w-auto px-4 py-2.5 text-gray-600 dark:text-gray-300 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition text-center disabled:opacity-50"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-lg transition flex items-center justify-center gap-2 shadow"
+                disabled={isSubmitting || receiptBusy}
+                className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition flex items-center justify-center gap-2 shadow"
               >
                 {isSubmitting && <i className="fa-solid fa-spinner animate-spin"></i>}
                 <span>{isSubmitting ? 'Enviando...' : 'Confirmar y Enviar Pedido'}</span>

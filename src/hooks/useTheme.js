@@ -5,7 +5,7 @@ export function useTheme() {
   const [darkMode, setDarkMode] = useState(() => {
     const saved = storage.get(STORAGE_KEYS.theme)
     if (saved) return saved === 'dark'
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
+    return false
   })
 
   // Aplica la clase `dark` en <html> y persiste la preferencia
