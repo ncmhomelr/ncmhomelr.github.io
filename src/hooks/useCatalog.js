@@ -112,8 +112,21 @@ export function useCatalog(addToast) {
       const client = clientRef.current
 
       if (supabaseConnected && client) {
-        const { pedidoId } = await submitOrder(client, { customer, items: cart, location })
-        await sendReceiptToTelegram({ receipt, pedidoId, customer })
+        const itemsPayload = cart.map((item) => ({
+          producto_id: item.id,
+          cantidad: item.cantidad,
+        }))
+
+        // 2. Invocación atómica RPC con ubicación
+        const { data, error } = await client.rpc('procesar_pedido', {
+          p_cliente_nombre: customer.nombre,
+          p_cliente_telefono: customer.telefono,
+          p_cliente_direccion: customer.direccion,
+          p_items: itemsPayload,
+          p_latitud: location?.lat ?? null,   // ← Coordenada de latitud
+          p_longitud: location?.lng ?? null,  // ← Coordenada de longitud
+        })
+        await sendReceiptToTelegram({ receipt, customer })
         await refreshProducts(client, cart)
         addToast(`¡Pedido registrado exitosamente!`, 'success')
 

@@ -11,7 +11,7 @@ export class OrderError extends Error {
   }
 }
 
-export function buildOrderFormData({ customer, items, location, receipt }) {
+export function buildOrderFormData({ customer, items, location }) {
   const form = new FormData()
   form.set('nombre', customer.nombre.trim())
   form.set('telefono', customer.telefono.trim())

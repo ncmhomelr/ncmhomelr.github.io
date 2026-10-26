@@ -21,8 +21,8 @@ const num = (value, fallback) => {
 export const MAP_CONFIG = {
   // Vista inicial (toda Argentina). Cámbiala con VITE_MAP_LAT / VITE_MAP_LNG / VITE_MAP_ZOOM
   // para centrarla en tu zona de entrega, p. ej. zoom 12 sobre tu ciudad.
-  center: [num(env.VITE_MAP_LAT, -34.6), num(env.VITE_MAP_LNG, -64)],
-  zoom: num(env.VITE_MAP_ZOOM, 4),
+  center: [num(env.VITE_MAP_LAT, -29.4131), num(env.VITE_MAP_LNG, -66.8558)],
+  zoom: num(env.VITE_MAP_ZOOM, 12),
   // Los servidores públicos de OpenStreetMap son para uso liviano. Si la tienda crece,
   // cambia a otro proveedor solo con variables de entorno (sin tocar el código).
   tileUrl: env.VITE_MAP_TILE_URL || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
