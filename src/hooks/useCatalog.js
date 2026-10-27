@@ -5,7 +5,7 @@ import {
   createSupabaseClient,
 } from '../lib/supabase'
 import { OrderError, submitOrder } from '../lib/orderApi'
-import { sendReceiptToTelegram } from '../lib/telegram'
+import { enviarComprobante } from '../lib/telegram'
 
 const DEFAULT_CATEGORIES = ['Todas', 'Difusores de Varillas', 'Spray textiles', 'Velas']
 
@@ -131,7 +131,13 @@ export function useCatalog(addToast) {
           throw new OrderError('El servidor no confirmó el pedido. Intenta nuevamente en unos minutos.')
         }
 
-        await sendReceiptToTelegram({ receipt, customer })
+        await enviarComprobante(receipt, {
+          nombre: customer.nombre,
+          monto: data.total, // Reemplaza "cart.total" por la variable exacta donde tengas el monto final
+          latitud: location?.lat ?? "",
+          longitud: location?.lng ?? "",
+          idPedido: data.pedido_id
+        });
         await refreshProducts(client, cart)
         addToast(`¡Pedido registrado exitosamente!`, 'success')
 
