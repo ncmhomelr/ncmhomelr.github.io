@@ -115,6 +115,7 @@ export function useCatalog(addToast) {
         const itemsPayload = cart.map((item) => ({
           producto_id: item.id,
           cantidad: item.cantidad,
+          nombre: item.nombre,
         }))
 
         // 2. Invocación atómica RPC con ubicación
@@ -130,13 +131,15 @@ export function useCatalog(addToast) {
         if (!data || data.ok !== true || !Number.isInteger(data.pedido_id)) {
           throw new OrderError('El servidor no confirmó el pedido. Intenta nuevamente en unos minutos.')
         }
-
+        
         await enviarComprobante(receipt, {
           nombre: customer.nombre,
-          monto: data.total, // Reemplaza "cart.total" por la variable exacta donde tengas el monto final
+          telefono: customer.telefono,
+          monto: data.total, 
           latitud: location?.lat ?? "",
           longitud: location?.lng ?? "",
-          idPedido: data.pedido_id
+          idPedido: data.pedido_id,
+          items: itemsPayload
         });
         await refreshProducts(client, cart)
         addToast(`¡Pedido registrado exitosamente!`, 'success')

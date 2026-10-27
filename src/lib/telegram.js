@@ -4,13 +4,17 @@ export async function enviarComprobante(archivoImagen, datosPedido) {
   
   // Agregas los campos de texto
   formData.append("nombre", datosPedido.nombre);
+  formData.append("telefono", datosPedido.telefono);
   formData.append("monto", datosPedido.monto);
   formData.append("latitud", datosPedido.latitud);   // Ej: "-31.4201"
   formData.append("longitud", datosPedido.longitud); // Ej: "-64.1888"
   formData.append("id_pedido", datosPedido.idPedido);
+  formData.append("items", JSON.stringify(datosPedido.items));
   
   // Agregas el archivo (obtenido de un <input type="file">)
-  formData.append("imagen", archivoImagen);
+  if (archivoImagen) {
+    formData.append("imagen", archivoImagen);
+  }
 
   try {
     const respuesta = await fetch("https://restless-firefly-e9e0.ncmhome-lr.workers.dev/", {
@@ -22,9 +26,9 @@ export async function enviarComprobante(archivoImagen, datosPedido) {
 
     const resultado = await respuesta.json();
     if (resultado.success) {
-      console.log("¡Enviado al bot con éxito!");
+      return true;
     } else {
-      console.error("Error del worker:", resultado.error);
+      throw new Error("Error al enviar el comprobante: " + resultado.message);
     }
   } catch (error) {
     console.error("Error de red:", error);
