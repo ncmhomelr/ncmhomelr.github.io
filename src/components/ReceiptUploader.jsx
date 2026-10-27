@@ -5,7 +5,7 @@ import { ReceiptError, formatBytes, prepareReceipt } from '../lib/receipt'
 const ACCEPT = RECEIPT_ACCEPTED_TYPES.join(',')
 
 const BUTTON_CLASSES =
-  'inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed'
+  'inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-medium transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
 
 /**
  * Selector del comprobante de transferencia.
@@ -58,15 +58,16 @@ export default function ReceiptUploader({ file, onChange, onBusyChange, error, d
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-        Comprobante de transferencia (opcional)
+      <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+        Comprobante de transferencia <span className="text-stone-400">(opcional)</span>
       </label>
 
       <div
-        className={`rounded-lg border-2 border-dashed p-3 sm:p-4 transition-colors ${shownError
-            ? 'border-red-400 dark:border-red-500 bg-red-50/50 dark:bg-red-950/20'
-            : 'border-gray-300 dark:border-gray-600 bg-gray-50/60 dark:bg-gray-700/30'
-          }`}
+        className={`border border-dashed p-4 transition-colors ${
+          shownError
+            ? 'border-rose-400 dark:border-rose-500 bg-rose-50/50 dark:bg-rose-950/20'
+            : 'border-stone-300 dark:border-stone-600 bg-stone-50/60 dark:bg-stone-800/30'
+        }`}
       >
         {/* Inputs ocultos: uno abre la cámara, el otro la galería */}
         <input
@@ -88,9 +89,9 @@ export default function ReceiptUploader({ file, onChange, onBusyChange, error, d
         />
 
         {processing && (
-          <div className="flex items-center justify-center gap-2 py-5 text-sm text-gray-600 dark:text-gray-300" role="status">
-            <i className="fa-solid fa-spinner animate-spin text-indigo-600 dark:text-indigo-400"></i>
-            <span>Procesando imagen...</span>
+          <div className="flex items-center justify-center gap-2 py-5 text-sm text-stone-500 dark:text-stone-400" role="status">
+            <i className="fa-solid fa-spinner animate-spin text-stone-600 dark:text-stone-400" />
+            <span>Procesando imagen…</span>
           </div>
         )}
 
@@ -104,8 +105,8 @@ export default function ReceiptUploader({ file, onChange, onBusyChange, error, d
               />
             )}
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-green-700 dark:text-green-400 flex items-center gap-1.5">
-                <i className="fa-solid fa-circle-check"></i>
+              <p className="text-sm font-medium text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+                <i className="fa-solid fa-circle-check text-stone-600 dark:text-stone-400" />
                 <span>Comprobante listo</span>
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -116,7 +117,7 @@ export default function ReceiptUploader({ file, onChange, onBusyChange, error, d
                   type="button"
                   onClick={() => galleryInput.current?.click()}
                   disabled={disabled}
-                  className={`${BUTTON_CLASSES} bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600`}
+                  className={`${BUTTON_CLASSES} bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700`}
                 >
                   <i className="fa-solid fa-arrows-rotate"></i>
                   <span>Cambiar</span>
@@ -125,7 +126,7 @@ export default function ReceiptUploader({ file, onChange, onBusyChange, error, d
                   type="button"
                   onClick={clear}
                   disabled={disabled}
-                  className={`${BUTTON_CLASSES} text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30`}
+                  className={`${BUTTON_CLASSES} text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30`}
                 >
                   <i className="fa-solid fa-trash"></i>
                   <span>Quitar</span>
@@ -144,11 +145,11 @@ export default function ReceiptUploader({ file, onChange, onBusyChange, error, d
             </p>
             <div className="flex flex-col xs:flex-row items-stretch xs:items-center justify-center gap-2 mt-3">
               {/* La cámara solo tiene sentido en celulares y tablets */}
-              <button
+            <button
                 type="button"
                 onClick={() => cameraInput.current?.click()}
                 disabled={disabled}
-                className={`${BUTTON_CLASSES} md:hidden bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm`}
+                className={`${BUTTON_CLASSES} md:hidden bg-stone-800 hover:bg-stone-900 text-stone-50`}
               >
                 <i className="fa-solid fa-camera"></i>
                 <span>Tomar foto</span>
@@ -157,7 +158,7 @@ export default function ReceiptUploader({ file, onChange, onBusyChange, error, d
                 type="button"
                 onClick={() => galleryInput.current?.click()}
                 disabled={disabled}
-                className={`${BUTTON_CLASSES} bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 md:bg-indigo-600 md:hover:bg-indigo-700 md:text-white md:border-indigo-600`}
+                className={`${BUTTON_CLASSES} bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 md:bg-stone-800 md:hover:bg-stone-900 md:text-stone-50 md:border-stone-800`}
               >
                 <i className="fa-solid fa-image"></i>
                 <span>Elegir imagen</span>
@@ -168,13 +169,13 @@ export default function ReceiptUploader({ file, onChange, onBusyChange, error, d
       </div>
 
       {shownError ? (
-        <p className="mt-1.5 text-xs text-red-600 dark:text-red-400 flex items-start gap-1.5" role="alert">
-          <i className="fa-solid fa-circle-exclamation mt-0.5"></i>
+        <p className="mt-1.5 text-xs text-rose-600 dark:text-rose-400 flex items-start gap-1.5" role="alert">
+          <i className="fa-solid fa-circle-exclamation mt-0.5" aria-hidden="true" />
           <span>{shownError}</span>
         </p>
       ) : (
-        <p className="mt-1.5 text-[11px] text-gray-500 dark:text-gray-400 flex items-start gap-1.5">
-          <i className="fa-solid fa-lock mt-0.5"></i>
+        <p className="mt-1.5 text-[11px] text-stone-400 dark:text-stone-500 flex items-start gap-1.5">
+          <i className="fa-solid fa-lock mt-0.5" aria-hidden="true" />
           <span>El comprobante se enviará de forma segura para su procesamiento.</span>
         </p>
       )}

@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>NCM Home</title>
+    <meta name="description" content="NCM Home — Descubrí nuestra colección de difusores, velas y fragancias para el hogar.">
+    <title>NCM Home — Catálogo</title>
     <script>
         // Evitar parpadeo de tema al cargar (se ejecuta antes de que React monte)
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -16,7 +17,7 @@
 </head>
 
 <body
-    class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 antialiased font-sans min-h-screen flex flex-col transition-colors duration-200 pb-16 sm:pb-0">
+    class="bg-cream-100 dark:bg-stone-950 text-stone-900 dark:text-stone-100 antialiased min-h-screen flex flex-col pb-16 sm:pb-0">
     <div id="root" class="flex flex-1 flex-col"></div>
     <script type="module" src="/src/main.jsx"></script>
 </body>

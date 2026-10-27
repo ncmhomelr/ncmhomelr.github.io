@@ -5,9 +5,6 @@ import ReceiptUploader from './ReceiptUploader'
 // El mapa (Leaflet) se descarga solo cuando se abre el checkout
 const LocationPicker = lazy(() => import('./LocationPicker'))
 
-const INPUT_CLASSES =
-  'w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none'
-
 // Modal de checkout (scroll en el contenido, responsive)
 export default function CheckoutModal({
   isOpen,
@@ -47,7 +44,6 @@ export default function CheckoutModal({
   const handleSubmit = (e) => {
     e.preventDefault()
     if (isSubmitting || receiptBusy) return
-
     setReceiptError('')
     setLocationError('')
     onSubmit()
@@ -66,78 +62,100 @@ export default function CheckoutModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-3 sm:px-4 py-6">
-        <div className="fixed inset-0 bg-black/50 dark:bg-black/75 transition-opacity" onClick={safeClose}></div>
+    <div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-label="Finalizar pedido">
+      <div className="flex items-start justify-center min-h-screen px-4 py-8 sm:py-12">
+        <div
+          className="fixed inset-0 bg-stone-900/40 dark:bg-black/60 transition-opacity"
+          onClick={safeClose}
+          aria-hidden="true"
+        />
 
-        <div className="relative bg-white dark:bg-gray-800 rounded-xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-gray-200 dark:border-gray-700 my-auto">
-          <div className="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700 mb-4">
-            <h3 className="font-bold text-base sm:text-lg text-gray-800 dark:text-gray-100 flex items-center gap-2">
-              <i className="fa-solid fa-clipboard-check text-indigo-600 dark:text-indigo-400"></i>
-              <span>Finalizar Pedido</span>
-            </h3>
+        <div className="relative bg-white dark:bg-stone-900 w-full max-w-lg border border-stone-200 dark:border-stone-800 shadow-2xl my-auto animate-fade-in">
+
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 dark:border-stone-800">
+            <h2 className="font-editorial text-lg font-semibold text-stone-800 dark:text-stone-100">
+              Finalizar pedido
+            </h2>
             <button
+              id="close-checkout"
               onClick={safeClose}
               disabled={isSubmitting}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 disabled:opacity-40"
+              className="btn-icon disabled:opacity-40"
+              aria-label="Cerrar"
             >
-              <i className="fa-solid fa-xmark text-xl"></i>
+              <i className="fa-solid fa-xmark text-base" />
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                Nombre Completo *
-              </label>
-              <input
-                type="text"
-                value={customer.nombre}
-                onChange={handleChange('nombre')}
-                required
-                maxLength={120}
-                placeholder="Ej: Juan Pérez"
-                className={INPUT_CLASSES}
-              />
-            </div>
+          {/* Formulario */}
+          <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                Teléfono / WhatsApp *
-              </label>
-              <input
-                type="tel"
-                value={customer.telefono}
-                onChange={handleChange('telefono')}
-                required
-                maxLength={40}
-                placeholder="Ej: +54 9 11 1234-5678"
-                className={INPUT_CLASSES}
-              />
-            </div>
+            {/* Datos del cliente */}
+            <fieldset className="space-y-3.5">
+              <legend className="text-xs font-semibold uppercase tracking-widest text-stone-400 dark:text-stone-500 pb-1">
+                Datos del cliente
+              </legend>
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                Dirección de Entrega *
-              </label>
-              <textarea
-                value={customer.direccion}
-                onChange={handleChange('direccion')}
-                required
-                rows={2}
-                maxLength={300}
-                placeholder="Calle, número, piso/depto, ciudad..."
-                className={INPUT_CLASSES}
-              ></textarea>
-            </div>
+              <div>
+                <label htmlFor="checkout-nombre" className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                  Nombre completo <span className="text-rose-500" aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="checkout-nombre"
+                  type="text"
+                  value={customer.nombre}
+                  onChange={handleChange('nombre')}
+                  required
+                  maxLength={120}
+                  placeholder="Ej: Juan Pérez"
+                  className="field-base"
+                  autoComplete="name"
+                />
+              </div>
 
-            {/* Mapa interactivo (Leaflet + OpenStreetMap) */}
+              <div>
+                <label htmlFor="checkout-telefono" className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                  Teléfono / WhatsApp <span className="text-rose-500" aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="checkout-telefono"
+                  type="tel"
+                  value={customer.telefono}
+                  onChange={handleChange('telefono')}
+                  required
+                  maxLength={40}
+                  placeholder="Ej: +54 9 11 1234-5678"
+                  className="field-base"
+                  autoComplete="tel"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="checkout-direccion" className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                  Dirección de entrega <span className="text-rose-500" aria-hidden="true">*</span>
+                </label>
+                <textarea
+                  id="checkout-direccion"
+                  value={customer.direccion}
+                  onChange={handleChange('direccion')}
+                  required
+                  rows={2}
+                  maxLength={300}
+                  placeholder="Calle, número, piso/depto, ciudad…"
+                  className="field-base resize-none"
+                  autoComplete="street-address"
+                />
+              </div>
+            </fieldset>
+
+            {/* Mapa interactivo */}
             <div ref={locationRef}>
               <Suspense
                 fallback={
-                  <div className="h-56 sm:h-64 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-sm text-gray-500 dark:text-gray-400">
-                    <i className="fa-solid fa-spinner animate-spin mr-2"></i>
-                    Cargando mapa...
+                  <div className="h-56 sm:h-64 flex items-center justify-center border border-stone-200 dark:border-stone-700 text-sm text-stone-500 dark:text-stone-400 bg-stone-50 dark:bg-stone-800/60">
+                    <i className="fa-solid fa-spinner animate-spin mr-2" />
+                    Cargando mapa…
                   </div>
                 }
               >
@@ -148,27 +166,32 @@ export default function CheckoutModal({
                 />
               </Suspense>
               {locationError && (
-                <p className="mt-1.5 text-xs text-red-600 dark:text-red-400" role="alert">
+                <p className="mt-1.5 text-xs text-rose-600 dark:text-rose-400 flex items-center gap-1.5" role="alert">
+                  <i className="fa-solid fa-circle-exclamation" />
                   {locationError}
                 </p>
               )}
             </div>
 
-            {/* Resumen rápido de compra */}
-            <div className="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 p-3 rounded-lg text-xs space-y-1.5">
-              <div className="font-bold text-indigo-900 dark:text-indigo-300 flex items-center justify-between">
-                <span>Resumen de la orden:</span>
-                <span className="text-[11px] font-normal text-indigo-700 dark:text-indigo-400">
-                  {`${totalCartItems} productos seleccionados`}
+            {/* Resumen de compra */}
+            <div className="bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-widest text-stone-400 dark:text-stone-500">
+                  Resumen
+                </span>
+                <span className="text-xs text-stone-500 dark:text-stone-400 tabular-nums">
+                  {totalCartItems} {totalCartItems === 1 ? 'producto' : 'productos'}
                 </span>
               </div>
-              <div className="flex justify-between text-indigo-900 dark:text-indigo-200 font-bold text-sm pt-1.5 border-t border-indigo-200 dark:border-indigo-800">
-                <span>Total a abonar:</span>
-                <span>{formatCurrency(cartSubtotal)}</span>
+              <div className="flex justify-between items-baseline pt-2 border-t border-stone-200 dark:border-stone-700">
+                <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Total a abonar</span>
+                <span className="text-base font-bold text-stone-900 dark:text-stone-50 tabular-nums">
+                  {formatCurrency(cartSubtotal)}
+                </span>
               </div>
             </div>
 
-            {/* Comprobante de la transferencia */}
+            {/* Comprobante de transferencia */}
             <div ref={receiptRef}>
               <ReceiptUploader
                 file={receipt}
@@ -179,22 +202,25 @@ export default function CheckoutModal({
               />
             </div>
 
-            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2">
+            {/* Acciones */}
+            <div className="flex flex-col-reverse sm:flex-row gap-2.5 pt-1">
               <button
+                id="cancel-checkout"
                 type="button"
                 onClick={safeClose}
                 disabled={isSubmitting}
-                className="w-full sm:w-auto px-4 py-2.5 text-gray-600 dark:text-gray-300 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition text-center disabled:opacity-50"
+                className="btn-ghost w-full sm:w-auto flex-1 justify-center disabled:opacity-40"
               >
                 Cancelar
               </button>
               <button
+                id="submit-checkout"
                 type="submit"
                 disabled={isSubmitting || receiptBusy}
-                className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition flex items-center justify-center gap-2 shadow"
+                className="btn-primary w-full sm:w-auto flex-1 justify-center py-3"
               >
-                {isSubmitting && <i className="fa-solid fa-spinner animate-spin"></i>}
-                <span>{isSubmitting ? 'Enviando...' : 'Confirmar y Enviar Pedido'}</span>
+                {isSubmitting && <i className="fa-solid fa-spinner animate-spin" />}
+                <span>{isSubmitting ? 'Enviando…' : 'Confirmar pedido'}</span>
               </button>
             </div>
           </form>
@@ -203,3 +229,4 @@ export default function CheckoutModal({
     </div>
   )
 }
+

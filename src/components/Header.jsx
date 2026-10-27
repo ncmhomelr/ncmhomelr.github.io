@@ -1,7 +1,7 @@
 function SearchIcon() {
   return (
-    <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
-      <i className="fa-solid fa-magnifying-glass text-xs"></i>
+    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+      <i className="fa-solid fa-magnifying-glass text-xs" />
     </span>
   )
 }
@@ -18,70 +18,81 @@ export default function Header({
   totalCartItems,
 }) {
   return (
-    <header className="sticky top-0 z-30 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        {/* Fila superior: Logo, Estados y Acciones */}
-        <div className="h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+    <header className="sticky top-0 z-30 bg-cream-100/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 transition-colors duration-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Fila principal: Logo · Búsqueda · Acciones */}
+        <div className="h-14 sm:h-16 flex items-center justify-between gap-3 sm:gap-5">
+
           {/* Logo */}
-          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+          <div className="shrink-0">
             <img
-              src="/assets/Logo+dibujo.jpg"
+              src="/assets/Logo+dibujo.png"
               alt="NCM Home"
-              className="h-10 w-auto object-contain rounded-sm"
+              className="h-9 sm:h-10 w-auto object-contain"
             />
           </div>
 
           {/* Buscador Desktop/Tablet (md+) */}
-          <div className="hidden md:flex flex-1 max-w-xl items-center gap-2 mx-2">
+          <div className="hidden md:flex flex-1 max-w-md items-center gap-2.5">
             <div className="relative flex-1">
               <SearchIcon />
               <input
+                id="search-desktop"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Buscar productos por nombre o descripción..."
-                className="w-full pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-gray-50/50 dark:bg-gray-700/50 focus:bg-white dark:focus:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                placeholder="Buscar productos…"
+                className="field-base pl-9 pr-4 py-2"
               />
+              {searchQuery.length > 0 && (
+                <button
+                  onClick={() => onSearchChange('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+                  aria-label="Limpiar búsqueda"
+                >
+                  <i className="fa-solid fa-xmark text-xs" />
+                </button>
+              )}
             </div>
 
             <select
+              id="category-filter-desktop"
               value={selectedCategory}
               onChange={(e) => onCategoryChange(e.target.value)}
-              className="border border-gray-300 dark:border-gray-600 rounded-lg text-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 transition-colors"
+              className="field-base w-auto py-2 pr-8 cursor-pointer"
             >
               {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
+                <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
           </div>
 
-          {/* Botones de Acción: Tema Oscuro/Claro, Supabase y Carrito */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* Botón de Alternar Modo Claro / Oscuro */}
+          {/* Acciones */}
+          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+
+            {/* Modo oscuro / claro */}
             <button
+              id="toggle-darkmode"
               onClick={onToggleDarkMode}
-              className="p-2 sm:p-2.5 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              className="btn-icon"
               title={darkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
               aria-label="Cambiar modo de color"
             >
-              <i
-                className={`fa-solid text-base sm:text-lg ${darkMode ? 'fa-sun text-amber-400' : 'fa-moon text-indigo-600'
-                  }`}
-              ></i>
+              <i className={`fa-solid text-base ${darkMode ? 'fa-sun text-amber-400' : 'fa-moon'}`} />
             </button>
 
-            {/* Botón Carrito Header */}
+            {/* Carrito */}
             <button
+              id="open-cart"
               onClick={onOpenCart}
-              className="relative bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white px-3 sm:px-4 py-2 sm:py-2 rounded-lg font-medium transition-all flex items-center gap-2 shadow"
+              className="relative btn-primary py-2 px-3 sm:px-4"
+              aria-label="Abrir carrito"
             >
-              <i className="fa-solid fa-cart-shopping text-sm sm:text-base"></i>
-              <span className="hidden sm:inline text-sm font-semibold">Carrito</span>
-              {/* Badge de Conteo de Items */}
+              <i className="fa-solid fa-bag-shopping text-sm" />
+              <span className="hidden sm:inline text-sm">Carrito</span>
               {totalCartItems > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 bg-red-500 text-white text-[10px] sm:text-xs font-bold min-w-[20px] h-5 sm:min-w-[24px] sm:h-6 px-1 rounded-full flex items-center justify-center border-2 border-white dark:border-gray-800 shadow">
+                <span className="absolute -top-1.5 -right-1.5 bg-sienna-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] px-0.5 rounded-full flex items-center justify-center border-2 border-cream-100 dark:border-stone-900">
                   {totalCartItems}
                 </span>
               )}
@@ -89,36 +100,38 @@ export default function Header({
           </div>
         </div>
 
-        {/* Fila inferior móvil: Buscador y Filtro por Categorías en pantallas menores a MD */}
-        <div className="md:hidden pb-3 pt-1 space-y-2 border-t border-gray-100 dark:border-gray-700/60 mt-1">
+        {/* Fila móvil: Búsqueda + Categorías */}
+        <div className="md:hidden pb-3 pt-1 space-y-2 border-t border-stone-200/60 dark:border-stone-700/40 mt-0.5">
           <div className="relative w-full">
             <SearchIcon />
             <input
+              id="search-mobile"
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Buscar productos..."
-              className="w-full pl-9 pr-8 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-gray-50/50 dark:bg-gray-700/60 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Buscar productos…"
+              className="field-base pl-9 pr-8 py-2"
             />
             {searchQuery.length > 0 && (
               <button
                 onClick={() => onSearchChange('')}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+                aria-label="Limpiar búsqueda"
               >
-                <i className="fa-solid fa-circle-xmark text-sm"></i>
+                <i className="fa-solid fa-xmark text-xs" />
               </button>
             )}
           </div>
 
-          {/* Carrusel horizontal de chips de categorías en móvil */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 -mx-3 px-3">
+          {/* Chips de categoría horizontales */}
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 -mx-4 px-4">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => onCategoryChange(cat)}
-                className={`shrink-0 px-3 py-1.5 rounded-full text-xs transition-colors ${selectedCategory === cat
-                  ? 'bg-indigo-600 text-white font-medium shadow-sm'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                className={`shrink-0 px-3.5 py-1.5 rounded-sm text-xs font-medium transition-colors duration-150 ${selectedCategory === cat
+                    ? 'bg-stone-800 text-stone-50'
+                    : 'bg-stone-100 dark:bg-stone-800/60 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700'
                   }`}
               >
                 {cat}
@@ -126,7 +139,9 @@ export default function Header({
             ))}
           </div>
         </div>
+
       </div>
     </header>
   )
 }
+

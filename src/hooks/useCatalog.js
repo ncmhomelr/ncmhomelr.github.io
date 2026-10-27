@@ -126,6 +126,11 @@ export function useCatalog(addToast) {
           p_latitud: location?.lat ?? null,   // ← Coordenada de latitud
           p_longitud: location?.lng ?? null,  // ← Coordenada de longitud
         })
+
+        if (!data || data.ok !== true || !Number.isInteger(data.pedido_id)) {
+          throw new OrderError('El servidor no confirmó el pedido. Intenta nuevamente en unos minutos.')
+        }
+
         await sendReceiptToTelegram({ receipt, customer })
         await refreshProducts(client, cart)
         addToast(`¡Pedido registrado exitosamente!`, 'success')
