@@ -13,7 +13,7 @@ export async function enviarComprobante(archivoImagen, datosPedido) {
   formData.append("imagen", archivoImagen);
 
   try {
-    const respuesta = await fetch("LA_URL_DE_TU_CLOUDFLARE_WORKER", {
+    const respuesta = await fetch("https://restless-firefly-e9e0.ncmhome-lr.workers.dev/", {
       method: "POST",
       // IMPORTANTE: Cuando usas FormData, NO debes configurar el "Content-Type" manualmente.
       // El navegador lo configurará automáticamente a 'multipart/form-data' agregando el boundary necesario.
