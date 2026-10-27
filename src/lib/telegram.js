@@ -1,5 +1,5 @@
 
-async function enviarComprobante(archivoImagen, datosPedido) {
+export async function enviarComprobante(archivoImagen, datosPedido) {
   const formData = new FormData();
   
   // Agregas los campos de texto
