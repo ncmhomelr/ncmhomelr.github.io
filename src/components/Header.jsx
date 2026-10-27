@@ -29,7 +29,7 @@ export default function Header({
             <img
               src="/assets/Logo+dibujo.png"
               alt="NCM Home"
-              className="h-9 sm:h-10 w-auto object-contain"
+              className="h-16 sm:h-30 w-auto object-contain"
             />
           </div>
 
@@ -130,8 +130,8 @@ export default function Header({
                 key={cat}
                 onClick={() => onCategoryChange(cat)}
                 className={`shrink-0 px-3.5 py-1.5 rounded-sm text-xs font-medium transition-colors duration-150 ${selectedCategory === cat
-                    ? 'bg-stone-800 text-stone-50'
-                    : 'bg-stone-100 dark:bg-stone-800/60 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700'
+                  ? 'bg-stone-800 text-stone-50'
+                  : 'bg-stone-100 dark:bg-stone-800/60 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700'
                   }`}
               >
                 {cat}
