@@ -40,7 +40,20 @@ export function useCatalog(addToast) {
         clientRef.current = client
 
         // Verificar la conexión intentando cargar los productos
-        const { data, error } = await client.from('productos').select('*').order('id')
+        const { data, error } = await client
+          .from('productos')
+          .select(`
+            *,
+            producto_imagenes (
+              nombre_archivo,
+              posicion
+            )
+          `)
+          .order('id')
+          .order('posicion', {
+            referencedTable: 'producto_imagenes',
+            ascending: true,
+          })
         if (error) throw error
 
         if (data && data.length > 0) {
@@ -92,7 +105,20 @@ export function useCatalog(addToast) {
   // Tras un pedido, el servidor ya descontó el stock: se vuelve a leer el catálogo real
   const refreshProducts = async (client, cart) => {
     try {
-      const { data, error } = await client.from('productos').select('*').order('id')
+      const { data, error } = await client
+        .from('productos')
+        .select(`
+          *,
+          producto_imagenes (
+            nombre_archivo,
+            posicion
+          )
+        `)
+        .order('id')
+        .order('posicion', {
+          referencedTable: 'producto_imagenes',
+          ascending: true,
+        })
       if (error) throw error
       if (data && data.length > 0) {
         applyProducts(data)
@@ -131,11 +157,11 @@ export function useCatalog(addToast) {
         if (!data || data.ok !== true || !Number.isInteger(data.pedido_id)) {
           throw new OrderError('El servidor no confirmó el pedido. Intenta nuevamente en unos minutos.')
         }
-        
+
         await enviarComprobante(receipt, {
           nombre: customer.nombre,
           telefono: customer.telefono,
-          monto: data.total, 
+          monto: data.total,
           latitud: location?.lat ?? "",
           longitud: location?.lng ?? "",
           idPedido: data.pedido_id,
