@@ -9,7 +9,7 @@ import Catalog from './components/Catalog'
 import MobileCartBar from './components/MobileCartBar'
 import CartDrawer from './components/CartDrawer'
 import CheckoutModal from './components/CheckoutModal'
-
+import Footer from './components/Footer'
 
 const EMPTY_CUSTOMER = { nombre: '', telefono: '', direccion: '' }
 
@@ -125,6 +125,7 @@ export default function App() {
         onSubmit={handleSubmitOrder}
       />
 
+      <Footer />
     </>
   )
 }
