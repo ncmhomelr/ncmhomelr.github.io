@@ -174,10 +174,11 @@ export default function ReceiptUploader({ file, onChange, onBusyChange, error, d
           <span>{shownError}</span>
         </p>
       ) : (
-        <p className="mt-1.5 text-[11px] text-stone-400 dark:text-stone-500 flex items-start gap-1.5">
-          <i className="fa-solid fa-lock mt-0.5" aria-hidden="true" />
-          <span>El comprobante se enviará de forma segura para su procesamiento.</span>
-        </p>
+      <div className="mt-1.5 space-y-1.5 text-[11px] text-stone-400 dark:text-stone-500">
+        <div className="text-stone-500">Alias: ncmhome</div>
+        <div className="text-stone-500">CVU: 0000003100045720179050</div>
+        <div className="text-stone-500">A nombre de nadia castro miotto</div>
+      </div>
       )}
     </div>
   )
